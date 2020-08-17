@@ -1,25 +1,18 @@
 package com.example.coctailmixer.ui.settings;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.example.coctailmixer.MainActivity;
 import com.example.coctailmixer.R;
 import com.example.coctailmixer.ui.gallery.GalleryFragment;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -56,13 +49,17 @@ public class SettingsFragment extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final Switch ShowWithOneMissingSwitch = view.findViewById(R.id.SettingsShowCoctailsWithMissingSwitch);
+        final Switch ShowWithOneMissingSwitch = view.findViewById(R.id.ShowOneWIthMissingSwitch);
+        final Switch RumCountsAsAllSwitch = view.findViewById(R.id.SettingsCountRumAsAllSwitch);
 
         Button ApplyButton = view.findViewById(R.id.SettingsApplyButton);
         Button CancelButton = view.findViewById(R.id.SettingsCancelButton);
         mSharedPref = getActivity().getPreferences(MODE_PRIVATE);
+
         boolean bIsChecked = mSharedPref.getBoolean("CoctailMixerbShowOneMissing", false);
         ShowWithOneMissingSwitch.setChecked(bIsChecked);
+        boolean bCountRum = mSharedPref.getBoolean("CoctailMixerbCountRum", false);
+        RumCountsAsAllSwitch.setChecked(bCountRum);
 
         CancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +76,10 @@ public class SettingsFragment extends DialogFragment {
                 if (isVisible())
                 {
                     boolean bShowOneMissing = ShowWithOneMissingSwitch.isChecked();
+                    boolean bCountRum = RumCountsAsAllSwitch.isChecked();
+
                     mSharedPref.edit().putBoolean("CoctailMixerbShowOneMissing", bShowOneMissing).apply();
+                    mSharedPref.edit().putBoolean("CoctailMixerbCountRum", bCountRum).apply();
 
                     MainActivity = (MainActivity)getActivity();
                     Fragment navHostFragment = MainActivity.getSupportFragmentManager().getPrimaryNavigationFragment();

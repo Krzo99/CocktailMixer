@@ -49,6 +49,7 @@ public class GalleryFragment extends Fragment {
     RecyclerView.Adapter AdapterWYCM;
 
     SharedPreferences mSavedData;
+    boolean bCountRumAsAll;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -148,6 +149,7 @@ public class GalleryFragment extends Fragment {
         ArrayList<Ingredients> MissingIngs;
 
         boolean bAllowOneMissing = mSavedData.getBoolean("CoctailMixerbShowOneMissing", false);
+        boolean bCoutRumAsOne = mSavedData.getBoolean("CoctailMixerbCountRum", false);
         ArrayList<CocktailListItem> Cocktails = new ArrayList<CocktailListItem>(((MainActivity)getActivity()).CocktailList);
         for (CocktailListItem i : Cocktails) {
             int AmmountOfIngs = i.Ings.size();
@@ -155,7 +157,8 @@ public class GalleryFragment extends Fragment {
 
             for (Ingredients ing : i.Ings)
             {
-                if (IngList.contains(ing.Name) || (IngList.contains("Rum") && ing.Name.equals("White rum")) || (IngList.contains("Rum") && ing.Name.equals("Dark rum")))
+                boolean bIsValid = bCoutRumAsOne && (IngList.contains("Rum") && ing.Name.equals("White rum")) || (IngList.contains("Rum") && ing.Name.equals("Dark rum"));
+                if (IngList.contains(ing.Name) || bIsValid)
                 {
                     MissingIngs.remove(ing);
                     AmmountOfIngs--;

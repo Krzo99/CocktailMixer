@@ -13,7 +13,7 @@
     app:layout_constraintCircleRadius="30dp">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/SetingsTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -30,7 +30,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/TextShowOneMissing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -40,7 +40,37 @@
             android:text="Show cocktails with one ingredient missing" />
 
         <Switch
-            android:id="@+id/SettingsShowCoctailsWithMissingSwitch"
+            android:id="@+id/ShowOneWIthMissingSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center|center_vertical"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingEnd="20dp"
+            android:theme="@style/SCBSwitch" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:id="@+id/SetingsCountRumText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_light"
+            android:text="Count Rum as both White and Dark" />
+
+        <Switch
+            android:id="@+id/SettingsCountRumAsAllSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
