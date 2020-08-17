@@ -42,6 +42,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 public class MainActivity extends AppCompatActivity {
+    //TODO add notes to .csv file!!
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final int READ_STORAGE_PERMISSION_CODE = 100;

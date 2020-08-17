@@ -155,7 +155,7 @@ public class GalleryFragment extends Fragment {
 
             for (Ingredients ing : i.Ings)
             {
-                if (IngList.contains(ing.Name))
+                if (IngList.contains(ing.Name) || (IngList.contains("Rum") && ing.Name.equals("White rum")) || (IngList.contains("Rum") && ing.Name.equals("Dark rum")))
                 {
                     MissingIngs.remove(ing);
                     AmmountOfIngs--;
