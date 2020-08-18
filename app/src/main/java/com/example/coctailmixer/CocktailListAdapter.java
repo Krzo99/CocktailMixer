@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapter.ListViewHolder> {
     private ArrayList<CocktailListItem> mDataset;
     private Fragment CalledFrom;
+    LinearLayout CocktailIng;
 
     public static class ListViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -68,11 +69,13 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
         // - replace the contents of the view with that element
         final CocktailListItem ThisItem = mDataset.get(position);
 
-        View root = holder.mView;
+        final View root = holder.mView;
 
         TextView Title = root.findViewById(R.id.Cocktail_name);
         ImageView Image = root.findViewById(R.id.Cocktail_image);
-        final LinearLayout CocktailIng = root.findViewById(R.id.LinCocktailDesc);
+        CocktailIng = root.findViewById(R.id.LinCocktailDesc);
+        CocktailIng.getLayoutParams().height = ThisItem.CurrentHeightOfItem;
+
         TextView CocktailDescText = root.findViewById(R.id.CocktailDesc);
         final LinearLayout CocktailCardRoot = root.findViewById(R.id.VertCoctailCard);
 
@@ -80,26 +83,32 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
 
         CocktailHeader.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                CocktailIng = root.findViewById(R.id.LinCocktailDesc);
+                System.out.println("Kliknu:" + ThisItem.Title);
                 int CurrentHeight = CocktailIng.getLayoutParams().height;
                 if (CurrentHeight == 0) {
                     CocktailIng.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    final ResizeAnimation resizeAnimation = new ResizeAnimation(
+                    ThisItem.CurrentHeightOfItem = CocktailIng.getMeasuredHeight();
+                    final ResizeAnimation BiggerheigthAnimation = new ResizeAnimation(
                             CocktailIng,
-                            CocktailIng.getMeasuredHeight(),
+                            ThisItem.CurrentHeightOfItem,
                             0
                     );
-                    resizeAnimation.setDuration(200);
-                    CocktailIng.startAnimation(resizeAnimation);
+                    BiggerheigthAnimation.setDuration(200);
+                    CocktailIng.startAnimation(BiggerheigthAnimation);
                 }
                 else {
                     CocktailIng.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    ResizeAnimation resizeAnimation = new ResizeAnimation(
+                    ResizeAnimation SmallerHeigthAnimation = new ResizeAnimation(
                             CocktailIng,
                             0,
                             CocktailIng.getHeight()
                     );
-                    resizeAnimation.setDuration(300);
-                    CocktailIng.startAnimation(resizeAnimation);
+                    SmallerHeigthAnimation.setDuration(200);
+                    CocktailIng.startAnimation(SmallerHeigthAnimation);
+
+                    ThisItem.CurrentHeightOfItem = 0;
+
                 }
 
             }

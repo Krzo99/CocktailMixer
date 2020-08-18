@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+    public RecyclerView.Adapter mAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
 
-        RecyclerView.Adapter mAdapter = new CocktailListAdapter(((MainActivity)getActivity()).CocktailList, this);
+        mAdapter = new CocktailListAdapter(((MainActivity)getActivity()).CocktailList, this);
         recyclerView.setAdapter(mAdapter);
 
         return root;

@@ -9,7 +9,10 @@ import android.renderscript.ScriptGroup;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.example.coctailmixer.ui.home.HomeFragment;
 import com.example.coctailmixer.ui.settings.SettingsFragment;
 import com.opencsv.CSVReader;
 
@@ -28,6 +31,7 @@ import java.util.Comparator;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -42,7 +46,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 public class MainActivity extends AppCompatActivity {
-    //TODO add notes to .csv file!!
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final int READ_STORAGE_PERMISSION_CODE = 100;
@@ -50,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<CocktailListItem> CocktailList;
     public ArrayList<String> AllIngredients;
+    public boolean bShowEasterEgg = false;
+    CocktailListItem EasterEggCocktail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,45 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        EasterEggCocktail = new CocktailListItem("Mulled wine", "1:Wine;24:Cinnamon", "It's the most wonderful time of the year", "");
+
+        ImageView Logo = findViewById(R.id.AppLogo);
+        Logo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                bShowEasterEgg = !bShowEasterEgg;
+
+                Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+                Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+
+                if (fragment.getClass() == HomeFragment.class) {
+                    HomeFragment HomeFrag = (HomeFragment) fragment;
+                    if (bShowEasterEgg) {
+                        Toast toast = Toast.makeText(view.getContext(), "OwO, what have you done?!?", Toast.LENGTH_SHORT);
+                        toast.show();
+
+                        CocktailList.add(EasterEggCocktail);
+
+                        Collections.sort(CocktailList, new Comparator<CocktailListItem>() {
+                            @Override
+                            public int compare(CocktailListItem s1, CocktailListItem s2) {
+                                return s1.Title.compareToIgnoreCase(s2.Title);
+                            }
+                        });
+
+                        HomeFrag.mAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast toast = Toast.makeText(view.getContext(), "Back to normal!", Toast.LENGTH_SHORT);
+                        toast.show();
+                        CocktailList.remove(EasterEggCocktail);
+
+                        HomeFrag.mAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                return false;
+            }
+        });
 
 
         InitCoctailRecycleList();

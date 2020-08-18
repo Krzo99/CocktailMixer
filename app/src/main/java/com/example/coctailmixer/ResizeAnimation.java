@@ -2,16 +2,18 @@ package com.example.coctailmixer;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.LinearLayout;
 
 public class ResizeAnimation extends Animation {
-    final int targetHeight;
+    int targetHeight;
     View view;
     int startHeight;
 
-    public ResizeAnimation(View view, int targetHeight, int startHeight) {
-        this.view = view;
-        this.targetHeight = targetHeight;
-        this.startHeight = startHeight;
+    public ResizeAnimation(View viewC, int targetHeightC, int startHeightC) {
+        view = viewC;
+        targetHeight = targetHeightC;
+        startHeight = startHeightC;
+        System.out.println(viewC.getId());
     }
 
     @Override
