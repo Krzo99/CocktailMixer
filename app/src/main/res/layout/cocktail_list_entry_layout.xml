@@ -60,6 +60,7 @@
             android:fontFamily="@font/roboto_light"
             android:lineSpacingExtra="14sp"
             android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:text="3 : gin \n5 : tonic"
             android:textAlignment="center"
             android:textColor="@color/white"

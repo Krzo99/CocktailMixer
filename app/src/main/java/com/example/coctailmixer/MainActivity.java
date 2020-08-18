@@ -81,24 +81,32 @@ public class MainActivity extends AppCompatActivity {
             InputStream inputStream = getResources().openRawResource(R.raw.cocktails);
             CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
             String[] a;
+            String Note = "";
             while ((a = reader.readNext()) != null) {
                 String Name = a[0];
                 String Ing = "";
+                Note = "";
                 for (int i = 1; i < a.length; i++)
                 {
                     if (!a[i].equals(""))
                     {
-                        Ing += a[i];
-                        Ing += (i % 2 == 0 ? ";" : ":");
+                        if (!a[i].contains("N:")) {
+                            Ing += a[i];
+                            Ing += (i % 2 == 0 ? ";" : ":");
 
-                        if (i % 2 == 0 && !AllIngredients.contains(a[i]))
+                            if (i % 2 == 0 && !AllIngredients.contains(a[i])) {
+                                AllIngredients.add(a[i]);
+                            }
+                        }
+                        else
                         {
-                            AllIngredients.add(a[i]);
+                            String[] Notes = a[i].split(":");
+                            Note = Notes[1];
                         }
                     }
 
                 }
-                CocktailListItem NewItem = new CocktailListItem(Name, Ing, "");
+                CocktailListItem NewItem = new CocktailListItem(Name, Ing, Note,"");
                 CocktailList.add(NewItem);
             }
 

@@ -9,12 +9,14 @@ public class CocktailListItem {
     public ArrayList<Ingredients> Ings;
     public String[] AlcoholList = new String[]{"Vodka", "Triple-sec", "White rum", "Orange curacao", "Dark rum", "Rum", "Tequila", "Gin", "Malibu"};
     public String MissingIng;
+    public String Notes;
 
-    public CocktailListItem(String TitleC, String IngsStr, String MissingIngC) //Format IngsStr -> Kok:Kaj;Kok:Kaj
+    public CocktailListItem(String TitleC, String IngsStr, String NotesC, String MissingIngC) //Format IngsStr -> Kok:Kaj;Kok:Kaj
     {
         Title = TitleC;
         Ings = new ArrayList<Ingredients>();
         MissingIng = MissingIngC;
+        Notes = NotesC;
         String[] IngsSplit = IngsStr.split(";");
         for (String Ing : IngsSplit) {
             String[] EndSplit = Ing.split(":");
@@ -34,6 +36,9 @@ public class CocktailListItem {
             boolean bIsAlcohol = (Arrays.asList(AlcoholList).contains(i.Name));
             String Name = String.format(bIsAlcohol ? "<span style='color:#ffc4c4'>%s</span>" : "%s", i.Name);
             end += String.format("<span style='color:green'>%d</span> %s <i>%s</i>&nbsp;&nbsp;&nbsp;&nbsp;%s<br />", i.Amount, (i.Amount == 1 ? "part" :  "parts" ), Name, !MissingIng.equals("") && i.Name.equals(MissingIng) && !bCalledFromHome  ? "<span style='color:red'><i>!!!</i></span>" : "");
+        }
+        if (!Notes.equals("")) {
+            end += String.format("<br /><small><i>Notes: %s</i></small>", Notes);
         }
         return end;
     }
