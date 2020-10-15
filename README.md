@@ -6,5 +6,5 @@ An android app source code, that shows you a list of cocktails, and everything y
 
 - You will be able to connect to an automatic mixer, and it will mix cocktails for you!
 
-
-![Main screen](https://i.imgur.com/KYwaZlM.png | width=100)
+<img src="https://i.imgur.com/KYwaZlM.png" width="48">
+![Main screen]( | width=100)
