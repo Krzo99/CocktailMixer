@@ -6,15 +6,33 @@
     app:startDestination="@+id/nav_recepie">
 
     <fragment
+        android:id="@+id/nav_favs"
+        android:name="com.dKrzmanc.coctailmixer.ui.favs.FavsFragment"
+        android:label="@string/menu_fav"
+        tools:layout="@layout/fragment_favs" />
+
+    <fragment
         android:id="@+id/nav_recepie"
-        android:name="com.example.coctailmixer.ui.home.HomeFragment"
+        android:name="com.dKrzmanc.coctailmixer.ui.recipes.RecipesFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_recipes" />
 
     <fragment
         android:id="@+id/nav_mix"
-        android:name="com.example.coctailmixer.ui.gallery.GalleryFragment"
+        android:name="com.dKrzmanc.coctailmixer.ui.make_own.MakeOwnFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_mixown" />
+
+    <fragment
+        android:id="@+id/nav_alc_types"
+        android:name="com.dKrzmanc.coctailmixer.ui.alctypes.AlcTypesFragment"
+        android:label="@string/menu_alc_types"
+        tools:layout="@layout/fragment_alc_types" />
+
+    <fragment
+        android:id="@+id/nav_appinfo"
+        android:name="com.dKrzmanc.coctailmixer.ui.appinfo.AboutFragment"
+        android:label="@string/menu_app_credits"
+        tools:layout="@layout/fragment_appcredits" />
 
 </navigation>

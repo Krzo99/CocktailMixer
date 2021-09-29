@@ -8,5 +8,8 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Recipes</string>
-    <string name="menu_gallery">Mix your own</string>
+    <string name="menu_gallery">Mix Your Own</string>
+    <string name="menu_fav">Favorites</string>
+    <string name="menu_alc_types">Alcohol List</string>
+    <string name="menu_app_credits">App Credits</string>
 </resources>

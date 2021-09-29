@@ -5,6 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_favs"
+            android:icon="@drawable/ic_navbar_fav"
+            android:title="@string/menu_fav" />
+        <item
             android:id="@+id/nav_recepie"
             android:icon="@drawable/ic_navbar_martini"
             android:title="@string/menu_home" />
@@ -12,5 +16,14 @@
             android:id="@+id/nav_mix"
             android:icon="@drawable/ic_navbar_mixyour"
             android:title="@string/menu_gallery" />
+        <item
+            android:id="@+id/nav_alc_types"
+            android:icon="@drawable/ic_navbar_alc_types"
+            android:title="@string/menu_alc_types" />
+        <item
+            android:id="@+id/nav_appinfo"
+            android:icon="@drawable/ic_navbar_aboutapp"
+            android:title="@string/menu_app_credits" />
+
     </group>
 </menu>
