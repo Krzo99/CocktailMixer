@@ -9,6 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -46,11 +47,11 @@
         </androidx.appcompat.widget.Toolbar>
 
 
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <include
         android:id="@+id/ContentView"
-        layout="@layout/content_main" />
+        layout="@layout/content_main"
+        android:background="#D61414" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

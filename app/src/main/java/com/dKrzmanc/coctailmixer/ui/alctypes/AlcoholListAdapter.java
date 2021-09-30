@@ -8,19 +8,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.dKrzmanc.coctailmixer.CocktailListAdapter;
-import com.dKrzmanc.coctailmixer.CocktailListItem;
 import com.dKrzmanc.coctailmixer.R;
 import com.dKrzmanc.coctailmixer.ResizeAnimation;
+import com.dKrzmanc.coctailmixer.ui.recipes.CocktailListItem;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AlcoholListAdapter extends RecyclerView.Adapter<AlcoholListAdapter.ListViewHolder> {
+    //mDataset never changes!, It only story every alcohol
     private ArrayList<AlcoholListItem> mDataset;
+    private ArrayList<AlcoholListItem> mSortedAlcohols;
     LinearLayout AlcoholIng;
 
     public static class ListViewHolder extends RecyclerView.ViewHolder {
@@ -32,8 +31,24 @@ public class AlcoholListAdapter extends RecyclerView.Adapter<AlcoholListAdapter.
         }
     }
 
-    public AlcoholListAdapter(ArrayList<AlcoholListItem> AlcoholItems, Fragment WhereWasItCalledFrom) {
+    public void filter(String text) {
+        mSortedAlcohols.clear();
+        if(text.isEmpty()){
+            mSortedAlcohols.addAll(mDataset);
+        } else{
+            text = text.toLowerCase();
+            for(AlcoholListItem item: mDataset){
+                if(item.Title.toLowerCase().contains(text)){
+                    mSortedAlcohols.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public AlcoholListAdapter(ArrayList<AlcoholListItem> AlcoholItems) {
         mDataset = AlcoholItems;
+        mSortedAlcohols = (ArrayList)mDataset.clone();
     }
 
 
@@ -52,7 +67,7 @@ public class AlcoholListAdapter extends RecyclerView.Adapter<AlcoholListAdapter.
     @Override
     public void onBindViewHolder(AlcoholListAdapter.ListViewHolder holder, int position) {
 
-        final AlcoholListItem ThisItem = mDataset.get(position);
+        final AlcoholListItem ThisItem = mSortedAlcohols.get(position);
         final View root = holder.mView;
 
         TextView Title = root.findViewById(R.id.Alcohol_name);
@@ -99,6 +114,10 @@ public class AlcoholListAdapter extends RecyclerView.Adapter<AlcoholListAdapter.
 
         //  Get image
         String ImgPath = ThisItem.Title.replace(" ", "_").toLowerCase();
+
+        //Handle special cases here:
+        ImgPath = ImgPath.replace("-", "_");
+
         Title.setText(ThisItem.Title);
         Description.setText(ThisItem.Description);
 
@@ -110,6 +129,6 @@ public class AlcoholListAdapter extends RecyclerView.Adapter<AlcoholListAdapter.
 
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return mSortedAlcohols.size();
     }
 }

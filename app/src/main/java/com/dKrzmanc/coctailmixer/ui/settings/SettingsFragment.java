@@ -10,9 +10,12 @@ import android.widget.Switch;
 
 import com.dKrzmanc.coctailmixer.MainActivity;
 import com.dKrzmanc.coctailmixer.R;
+import com.dKrzmanc.coctailmixer.ui.alctypes.AlcTypesFragment;
 import com.dKrzmanc.coctailmixer.ui.make_own.MakeOwnFragment;
+import com.dKrzmanc.coctailmixer.ui.recipes.RecipesFragment;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -51,15 +54,25 @@ public class SettingsFragment extends DialogFragment {
 
         final Switch ShowWithOneMissingSwitch = view.findViewById(R.id.ShowOneWIthMissingSwitch);
         final Switch RumCountsAsAllSwitch = view.findViewById(R.id.SettingsCountRumAsAllSwitch);
+        final Switch EnableSearchBarSwitch = view.findViewById(R.id.SettingsEnableSearchBarSwitch);
 
         Button ApplyButton = view.findViewById(R.id.SettingsApplyButton);
         Button CancelButton = view.findViewById(R.id.SettingsCancelButton);
-        mSharedPref = getActivity().getPreferences(MODE_PRIVATE);
+        try {
+            mSharedPref = getActivity().getPreferences(MODE_PRIVATE);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
-        boolean bIsChecked = mSharedPref.getBoolean("CoctailMixerbShowOneMissing", false);
-        ShowWithOneMissingSwitch.setChecked(bIsChecked);
+
+        boolean bShowOneMissing = mSharedPref.getBoolean("CoctailMixerbShowOneMissing", false);
+        ShowWithOneMissingSwitch.setChecked(bShowOneMissing);
         boolean bCountRum = mSharedPref.getBoolean("CoctailMixerbCountRum", false);
         RumCountsAsAllSwitch.setChecked(bCountRum);
+        boolean bEnableSearch = mSharedPref.getBoolean("CocktailMixerbEnableSearch", false);
+        EnableSearchBarSwitch.setChecked(bEnableSearch);
 
         CancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,9 +90,11 @@ public class SettingsFragment extends DialogFragment {
                 {
                     boolean bShowOneMissing = ShowWithOneMissingSwitch.isChecked();
                     boolean bCountRum = RumCountsAsAllSwitch.isChecked();
+                    boolean bEnableSearch =  EnableSearchBarSwitch.isChecked();
 
                     mSharedPref.edit().putBoolean("CoctailMixerbShowOneMissing", bShowOneMissing).apply();
                     mSharedPref.edit().putBoolean("CoctailMixerbCountRum", bCountRum).apply();
+                    mSharedPref.edit().putBoolean("CocktailMixerbEnableSearch", bEnableSearch).apply();
 
                     MainActivity = (MainActivity)getActivity();
                     Fragment navHostFragment = MainActivity.getSupportFragmentManager().getPrimaryNavigationFragment();
@@ -87,6 +102,14 @@ public class SettingsFragment extends DialogFragment {
                     if (fragment.getClass() == MakeOwnFragment.class)
                     {
                         ((MakeOwnFragment)fragment).CalcWYCMCocktails();
+                    }
+                    else if (fragment.getClass() == RecipesFragment.class)
+                    {
+                        ((RecipesFragment)fragment).ShowHideSearch(bEnableSearch, false);
+                    }
+                    else if (fragment.getClass() == AlcTypesFragment.class)
+                    {
+                        ((AlcTypesFragment)fragment).ShowHideSearch(bEnableSearch);
                     }
 
 

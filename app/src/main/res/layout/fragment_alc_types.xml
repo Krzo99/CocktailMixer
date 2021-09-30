@@ -6,13 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".ui.alctypes.AlcTypesFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/AlcoholListRecyclerView"
+    <LinearLayout
+        android:id="@+id/back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical">
+
+        <SearchView
+            android:id="@+id/AlcoholSearchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00232323"
+            android:contextClickable="true"
+            android:iconifiedByDefault="true"
+            android:isScrollContainer="false"
+            android:layoutDirection="rtl"
+            android:pointerIcon="context_menu"
+            android:textAlignment="center" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/AlcoholListRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

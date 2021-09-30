@@ -89,6 +89,35 @@
         android:orientation="horizontal"
         android:paddingTop="20dp">
 
+        <TextView
+            android:id="@+id/SettingsEnableSearchText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_light"
+            android:text="Enable Search bar" />
+
+        <Switch
+            android:id="@+id/SettingsEnableSearchBarSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center|center_vertical"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingEnd="20dp"
+            android:theme="@style/SCBSwitch" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingTop="20dp">
+
         <Space
             android:layout_width="64dp"
             android:layout_height="wrap_content"

@@ -1,16 +1,16 @@
 Cosmopolitan,3,Vodka,1,Triple-sec,2,Cranberry juice,1,Lime juice,,,,,,,
-Mojito,3,White rum,2,Lime juice,1,Soda water,,,,,,,,,N:Also add mint leaves
+Mojito,3,White rum,2,Lime juice,1,Soda water,,,,,,,,,"N:Sugar rim, can add lime"
 Mai Tai,3,White rum,1,Orange curacao,1,Lime juice,1,Orgeat syrup,2,Dark rum,,,,,N: Float dark rum on top
-Caipirinha,4,White rum,1,Lime juice,,,,,,,,,,,"N:Originally made with cachaça, instead of rum, also add sugar"
+Caipirinha,4,White rum,1,Lime juice,,,,,,,,,,,"N:Originally made with cachaça instead of rum, also add sugar"
 Margarita,1,Triple-sec,2,Tequila,1,Lime juice,,,,,,,,,N:Stick salt to glass rim
-Pina Colada,1,White rum,3,Pineapple juice,1,Coconut milk,,,,,,,,,
+Piña Colada,1,White rum,3,Pineapple juice,1,Coconut milk,,,,,,,,,
 Californication,1,Vodka,1,Gin,1,White rum,1,Tequila,6,Orange juice,,,,,
 Long island,2,Vodka,2,Gin,2,White rum,1,Tequila,2,Triple-sec,2,Coca-cola,2,Lime juice,N:You can also add sugar syrup
 Daiquiri,6,White rum,2,Lime juice,2,Sugar syrup,,,,,,,,,
 Malibu sunset,1,Malibu,2,Pineapple juice,1,Grenadine syrup,,,,,,,,,N:Pour grenadine slowly to make layers
-Slammer,1,Vodka,1,Tonic,,,,,,,,,,,"N:Get a strong glass, hit on table before drinking"
-Gin tonic,2,Gin,5,Tonic,,,,,,,,,,,
-Gin fizz,4,Gin,2,Lemon juice,1,Sugar syrup,2,Soda water,,,,,,,
+Slammer,1,Vodka,1,Sprite,,,,,,,,,,,"N:Get a strong glass, hit on table before drinking"
+Gin tonic,2,Gin,5,Tonic,,,,,,,,,,,N:Can add slice of lemon/lime or slice of cucumber
+Gin fizz,4,Gin,2,Lemon juice,1,Sugar syrup,2,Soda water,,,,,,,N:Can add slice of lemon/lime or slice of cucumber
 Tequila sunrise,3,Tequila,6,Orange juice,1,Grenadine syrup,,,,,,,,,N: Pour grenadine slowly to make layers
 Rum and coke,2,Rum,4,Coca-cola,,,,,,,,,,,
 Sex on the beach,2,Vodka,1,Peach schnapps,2,Orange juice,2,Cranberry juice,,,,,,,
@@ -25,4 +25,4 @@ Vodka blush,1,Vodka,1,Triple-sec,3,Cranberry juice,2,Orange juice,,,,,,,N:You ca
 Rum punch,1,Rum,1,Dark rum,1,Lime juice,2,Grenadine syrup,4,Orange juice,4,Pineapple juice,,,
 Bay breeze,2,Vodka,3,Pineapple juice,3,Cranberry juice,,,,,,,,,N:Replace vodka with Malibu for a special taste
 Blue lagoon,1,Vodka,1,Blue curacao,4,Lemon juice,,,,,,,,,
-Blue Hawaii,2,Vodka,2,White rum,1,Blue curacao,6,Pineapple juice,2,Sweet and sour mix,,,,,"N:Mix lime, lemon, water, sugar to substitute sweet & sour mix"
+Blue Hawaii,2,Vodka,2,White rum,1,Blue curacao,6,Pineapple juice,2,Sweet and sour mix,,,,,"N:Mix lime, lemon, water and sugar to substitute sweet & sour mix"

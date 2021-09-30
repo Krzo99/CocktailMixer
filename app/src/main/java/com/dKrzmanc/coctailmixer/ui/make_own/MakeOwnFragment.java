@@ -19,8 +19,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dKrzmanc.coctailmixer.CocktailListAdapter;
-import com.dKrzmanc.coctailmixer.CocktailListItem;
+import com.dKrzmanc.coctailmixer.ui.recipes.CocktailListAdapter;
+import com.dKrzmanc.coctailmixer.ui.recipes.CocktailListItem;
 import com.dKrzmanc.coctailmixer.Ingredients;
 import com.dKrzmanc.coctailmixer.IngredientsListAdapter;
 import com.dKrzmanc.coctailmixer.MainActivity;
@@ -39,7 +39,7 @@ public class MakeOwnFragment extends Fragment {
     AutoCompleteTextView AutoComplete;
     MainActivity Activity;
     ArrayList IngList;
-    ArrayList<CocktailListItem> CoctailsWCYM;
+    ArrayList<CocktailListItem> CocktailsWCYM;
     TextView WCYMText;
     RecyclerView.Adapter IngAdapter;
     RecyclerView.Adapter AdapterWYCM;
@@ -61,7 +61,7 @@ public class MakeOwnFragment extends Fragment {
         AutoComplete.setThreshold(1);
         AutoComplete.setAdapter(adapter);
         IngList = new ArrayList<>();
-        CoctailsWCYM = new ArrayList<>();
+        CocktailsWCYM = new ArrayList<>();
         mSavedData = getActivity().getPreferences(MODE_PRIVATE);
 
         //Ingredients list
@@ -81,9 +81,12 @@ public class MakeOwnFragment extends Fragment {
         RecyclerView.LayoutManager layoutManagerWCYM = new LinearLayoutManager(getActivity());
         WCYMRecycler.setLayoutManager(layoutManagerWCYM);
 
+
+
         //CoctailsWCYM.add(new CocktailListItem("Gin tonic", "3:Gin;5:Tonic"));
-        AdapterWYCM = new CocktailListAdapter(CoctailsWCYM, this);
+        AdapterWYCM = new CocktailListAdapter(CocktailsWCYM, this);
         WCYMRecycler.setAdapter(AdapterWYCM);
+        ((CocktailListAdapter)AdapterWYCM).filter("");
 
         WCYMText = root.findViewById(R.id.TextWCYM);
         WCYMText.setText("You can't make anything yet!");
@@ -131,6 +134,7 @@ public class MakeOwnFragment extends Fragment {
                 return true;
             }
         });
+
         return root;
     }
 
@@ -161,17 +165,17 @@ public class MakeOwnFragment extends Fragment {
                 }
             }
 
-            //Za fully made cocktaile
+            //Za fully made cocktails
             if (!bAllowOneMissing) {
-                if (AmmountOfIngs <= 0 && !CoctailsWCYM.contains(i)) {
-                    CoctailsWCYM.add(i);
-                    AdapterWYCM.notifyItemInserted(CoctailsWCYM.size() - 1);
+                if (AmmountOfIngs <= 0 && !CocktailsWCYM.contains(i)) {
+                    CocktailsWCYM.add(i);
+                    AdapterWYCM.notifyItemInserted(CocktailsWCYM.size() - 1);
 
-                } else if (CoctailsWCYM.contains(i) && AmmountOfIngs > 0) {
-                    int Where = CoctailsWCYM.indexOf(i);
-                    CoctailsWCYM.remove(Where);
+                } else if (CocktailsWCYM.contains(i) && AmmountOfIngs > 0) {
+                    int Where = CocktailsWCYM.indexOf(i);
+                    CocktailsWCYM.remove(Where);
                     AdapterWYCM.notifyItemRemoved(Where);
-                    AdapterWYCM.notifyItemRangeChanged(Where, CoctailsWCYM.size());
+                    AdapterWYCM.notifyItemRangeChanged(Where, CocktailsWCYM.size());
 
                 }
             }
@@ -179,10 +183,10 @@ public class MakeOwnFragment extends Fragment {
             {
                 if (AmmountOfIngs <= 0)
                 {
-                    if (!CoctailsWCYM.contains(i))
+                    if (!CocktailsWCYM.contains(i))
                     {
-                        CoctailsWCYM.add(i);
-                        AdapterWYCM.notifyItemInserted(CoctailsWCYM.size() - 1);
+                        CocktailsWCYM.add(i);
+                        AdapterWYCM.notifyItemInserted(CocktailsWCYM.size() - 1);
                     }
                     else
                     {
@@ -192,11 +196,11 @@ public class MakeOwnFragment extends Fragment {
                 }
                 else if (AmmountOfIngs == 1)
                 {
-                    if (!CoctailsWCYM.contains(i)) {
-                        CoctailsWCYM.add(i);
-                        int index = CoctailsWCYM.indexOf(i);
-                        CoctailsWCYM.get(index).MissingIng = MissingIngs.get(0).Name;
-                        AdapterWYCM.notifyItemInserted(CoctailsWCYM.size() - 1);
+                    if (!CocktailsWCYM.contains(i)) {
+                        CocktailsWCYM.add(i);
+                        int index = CocktailsWCYM.indexOf(i);
+                        CocktailsWCYM.get(index).MissingIng = MissingIngs.get(0).Name;
+                        AdapterWYCM.notifyItemInserted(CocktailsWCYM.size() - 1);
                     }
                     else if (!MissingIngs.get(0).equals(i.MissingIng))
                     {
@@ -204,17 +208,17 @@ public class MakeOwnFragment extends Fragment {
                         AdapterWYCM.notifyDataSetChanged();
                     }
                 }
-                else if (AmmountOfIngs > 1 && CoctailsWCYM.contains(i))
+                else if (AmmountOfIngs > 1 && CocktailsWCYM.contains(i))
                 {
-                    int Where = CoctailsWCYM.indexOf(i);
-                    CoctailsWCYM.remove(Where);
+                    int Where = CocktailsWCYM.indexOf(i);
+                    CocktailsWCYM.remove(Where);
                     AdapterWYCM.notifyItemRemoved(Where);
-                    AdapterWYCM.notifyItemRangeChanged(Where, CoctailsWCYM.size());
+                    AdapterWYCM.notifyItemRangeChanged(Where, CocktailsWCYM.size());
                 }
             }
         }
 
-        if (CoctailsWCYM.size() > 0)
+        if (CocktailsWCYM.size() > 0)
         {
             WCYMText.setText("You can make the following: ");
         }
@@ -223,7 +227,7 @@ public class MakeOwnFragment extends Fragment {
             WCYMText.setText("You can't make anything yet!");
         }
 
-        Collections.sort(CoctailsWCYM, new Comparator<CocktailListItem>() {
+        Collections.sort(CocktailsWCYM, new Comparator<CocktailListItem>() {
             @Override
             public int compare(CocktailListItem s1, CocktailListItem s2) {
                 return s1.Title.compareToIgnoreCase(s2.Title);

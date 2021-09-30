@@ -1,7 +1,6 @@
 package com.dKrzmanc.coctailmixer;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -9,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dKrzmanc.coctailmixer.ui.alctypes.AlcoholListItem;
+import com.dKrzmanc.coctailmixer.ui.recipes.CocktailListItem;
 import com.dKrzmanc.coctailmixer.ui.recipes.RecipesFragment;
 import com.dKrzmanc.coctailmixer.ui.settings.SettingsFragment;
 import com.opencsv.CSVReader;
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         GenerateAlcoholList();
-        InitCoctailRecycleList();
+        InitCocktailRecycleList();
     }
 
     private void GenerateAlcoholList() {
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
                 AlcoholListItem NewItem = new AlcoholListItem(Name, Desc, Desc.length() / 55);
 
-                AlcoholListStrings.add(Name);
+                AlcoholListStrings.add(Name.toLowerCase());
                 AlcoholList.add(NewItem);
             }
 
@@ -133,9 +133,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void InitCoctailRecycleList() {
+    private void InitCocktailRecycleList() {
         CocktailList = new ArrayList<>();
-        AllIngredients = new ArrayList();
+        AllIngredients = new ArrayList<>();
         try {
             InputStream inputStream = getResources().openRawResource(R.raw.cocktails);
             CSVReader reader = new CSVReader(new InputStreamReader(inputStream));

@@ -1,4 +1,4 @@
-package com.dKrzmanc.coctailmixer;
+package com.dKrzmanc.coctailmixer.ui.recipes;
 
 import android.content.Context;
 
@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
+import com.dKrzmanc.coctailmixer.Ingredients;
 import com.dKrzmanc.coctailmixer.MainActivity;
 
 public class CocktailListItem {
+
     public String Title;
     public ArrayList<Ingredients> Ings;
     private ArrayList<Character> Vowels = new ArrayList<Character>(Arrays.asList('A','E','I','O','U'));
@@ -34,11 +36,25 @@ public class CocktailListItem {
         }
     }
 
+    // If Ingredients contain this word/phrase
+    public Boolean doIngsContain(String s)
+    {
+        for(Ingredients item: Ings){
+            String lowercaseName = item.Name.toLowerCase();
+            if (lowercaseName.contains(s))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     String GenerateDescription(boolean bCalledFromHome)
     {
             String end = String.format("To craft %s <b><b>%s</b></b>, mix:<br />", Vowels.contains(Title.charAt(0)) ? "an" : "a" ,Title);
         for (Ingredients i : Ings) {
-            boolean bIsAlcohol = (Arrays.asList(MainActivity.AlcoholListStrings).contains(i.Name));
+            boolean bIsAlcohol = (MainActivity.AlcoholListStrings.contains(i.Name.toLowerCase()));
             String Name = String.format(bIsAlcohol ? "<span style='color:#ffc4c4'>%s</span>" : "%s", i.Name);
             end += String.format(Locale.getDefault(),"<span style='color:green'>%d</span> %s <i>%s</i>&nbsp;&nbsp;&nbsp;&nbsp;%s<br />", i.Amount, (i.Amount == 1 ? "part" :  "parts" ), Name, !MissingIng.equals("") && i.Name.equals(MissingIng) && !bCalledFromHome  ? "<span style='color:red'><i>!!!</i></span>" : "");
         }
