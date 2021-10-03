@@ -47,7 +47,7 @@
     <LinearLayout
         android:id="@+id/LinCocktailDesc"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="100dp"
         android:animateLayoutChanges="true"
         android:background="#000000"
         android:clickable="true"
@@ -56,15 +56,45 @@
         <TextView
             android:id="@+id/CocktailDesc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="70dp"
+            android:layout_weight="0.8"
             android:fontFamily="@font/roboto_light"
             android:lineSpacingExtra="14sp"
+            android:minLines="2"
+            android:paddingStart="20dp"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
-            android:text="3 : gin \n5 : tonic"
+            android:singleLine="false"
+            android:text="text"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="12dp"
+            android:paddingRight="20dp">
+
+            <ImageView
+                android:id="@+id/CocktailFavIconButton"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:tag="N"
+                app:srcCompat="@drawable/ic_fav_border" />
+
+            <ImageView
+                android:id="@+id/CocktailNoteIconButton"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                app:srcCompat="@drawable/ic_edit_note" />
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -1,16 +1,28 @@
 package com.dKrzmanc.coctailmixer.ui.recipes;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Typeface;
+import android.os.Build;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dKrzmanc.coctailmixer.MainActivity;
 import com.dKrzmanc.coctailmixer.R;
 import com.dKrzmanc.coctailmixer.ResizeAnimation;
+import com.dKrzmanc.coctailmixer.ui.favs.FavsFragment;
 import com.dKrzmanc.coctailmixer.ui.make_own.MakeOwnFragment;
 
 import java.util.ArrayList;
@@ -19,11 +31,14 @@ import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapter.ListViewHolder> {
     //Dataset never changes, contains all cocktails available!
     private ArrayList<CocktailListItem> mDataset;
     private Fragment CalledFrom;
-    LinearLayout CocktailIng;
+    TextView CocktailIng;
+    LinearLayout CocktailDescriptionLinLayout;
     private ArrayList<CocktailListItem> mSortedCoctails;
 
     //Only here so we dont have to make it "final" in onBindViewHolder
@@ -81,11 +96,8 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
         if (CalledFrom.getClass() == RecipesFragment.class) {
             CurrentlyEditedItem = mSortedCoctails.get(position);
         }
-        else if (CalledFrom.getClass() == MakeOwnFragment.class) {
-            CurrentlyEditedItem = mDataset.get(position);
-        }
         else {
-            return;
+            CurrentlyEditedItem = mDataset.get(position);
         }
 
         final CocktailListItem ThisItem = CurrentlyEditedItem;
@@ -93,43 +105,91 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
 
         TextView Title = root.findViewById(R.id.Cocktail_name);
         ImageView Image = root.findViewById(R.id.Cocktail_image);
-        CocktailIng = root.findViewById(R.id.LinCocktailDesc);
-        CocktailIng.getLayoutParams().height = ThisItem.CurrentHeightOfItem;
+        CocktailDescriptionLinLayout = root.findViewById(R.id.LinCocktailDesc);
+        CocktailDescriptionLinLayout.getLayoutParams().height = ThisItem.CurrentHeightOfItem;
 
         TextView CocktailDescText = root.findViewById(R.id.CocktailDesc);
         final LinearLayout CocktailCardRoot = root.findViewById(R.id.VertCoctailCard);
 
         LinearLayout CocktailHeader = root.findViewById(R.id.LinCocktailList);
 
+
+        // Set so it opens on click!
         CocktailHeader.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                CocktailIng = root.findViewById(R.id.LinCocktailDesc);
-                int CurrentHeight = CocktailIng.getLayoutParams().height;
+                CocktailDescriptionLinLayout = root.findViewById(R.id.LinCocktailDesc);
+                CocktailIng = root.findViewById(R.id.CocktailDesc);
+
+                int CurrentHeight = CocktailDescriptionLinLayout.getLayoutParams().height;
+                String Notes = ThisItem.Notes;
+
                 if (CurrentHeight == 0) {
-                    CocktailIng.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    ThisItem.CurrentHeightOfItem = CocktailIng.getMeasuredHeight();
+
+                    CocktailIng.measure(0,0);             //Measure Height of ings
+                    int measureNotes = getHeight(CocktailIng.getContext(), Notes,(int)CocktailIng.getTextSize() - 3, CocktailIng.getWidth(), CocktailIng.getTypeface(), 10);    //Measure height of Notes, for some reason cant use the same function!
+                    int measureIngs = CocktailIng.getMeasuredHeight();                      //Save Height of ings
+                    ThisItem.CurrentHeightOfItem = measureIngs + measureNotes ;
+
                     final ResizeAnimation BiggerheigthAnimation = new ResizeAnimation(
-                            CocktailIng,
+                            CocktailDescriptionLinLayout,
                             ThisItem.CurrentHeightOfItem,
                             0
                     );
+
                     BiggerheigthAnimation.setDuration(200);
-                    CocktailIng.startAnimation(BiggerheigthAnimation);
+                    CocktailDescriptionLinLayout.startAnimation(BiggerheigthAnimation);
                 }
                 else {
-                    CocktailIng.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     ResizeAnimation SmallerHeigthAnimation = new ResizeAnimation(
-                            CocktailIng,
+                            CocktailDescriptionLinLayout,
                             0,
-                            CocktailIng.getHeight()
+                            ThisItem.CurrentHeightOfItem
                     );
+
                     SmallerHeigthAnimation.setDuration(200);
-                    CocktailIng.startAnimation(SmallerHeigthAnimation);
+                    CocktailDescriptionLinLayout.startAnimation(SmallerHeigthAnimation);
 
                     ThisItem.CurrentHeightOfItem = 0;
 
                 }
 
+            }
+        });
+
+        // Save on Fav. icon click
+        final ImageView favBtn = root.findViewById(R.id.CocktailFavIconButton);
+        updateFavBtn(favBtn, ThisItem.bIsFavourited);
+
+        favBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity mainActivity = ((MainActivity) CalledFrom.getActivity());
+                boolean bIsSaved = ThisItem.bIsFavourited;
+
+                //  Negative because it'll change!
+                if (!bIsSaved) {
+                    ThisItem.bIsFavourited = true;
+                    boolean bSuccess = mainActivity.addCocktailToFav(ThisItem);
+                    if (bSuccess){
+                        updateFavBtn(favBtn, true);
+                    }
+                    else {
+                        ThisItem.bIsFavourited = false;
+                    }
+                }
+                else{
+                    ThisItem.bIsFavourited = false;
+                    boolean bSuccess = mainActivity.removeCocktailFromFav(ThisItem);
+                    if (bSuccess){
+                        updateFavBtn(favBtn, false);
+                        if (CalledFrom.getClass() == FavsFragment.class) {
+                            notifyDataSetChanged();
+                        }
+                    }
+                    else {
+                        ThisItem.bIsFavourited = true;
+                    }
+                }
             }
         });
 
@@ -160,20 +220,45 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
         CocktailDescText.setText(HtmlCompat.fromHtml(Desc, HtmlCompat.FROM_HTML_MODE_LEGACY));
 
     }
+    private void updateFavBtn(ImageView Imgbtn, boolean bIsSaved)
+    {
+        if (bIsSaved)
+        {
+            Imgbtn.setImageResource(R.drawable.ic_navbar_fav);
+        }
+        else
+        {
+            Imgbtn.setImageResource(R.drawable.ic_fav_border);
+        }
+    }
+
+    public static int getHeight(Context context, CharSequence text, int textSize, int textWidth, Typeface typeface, int padding) {
+        Log.e("textSize: ", textSize+"");
+        Log.e("textWidth: ", textWidth+"");
+        Log.e("padding: ", padding+"");
+
+        TextView textView = new TextView(context);
+        textView.setPadding(padding,padding,padding,padding);
+        textView.setTypeface(typeface);
+        textView.setText(text, TextView.BufferType.SPANNABLE);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(textWidth - 2*padding, View.MeasureSpec.AT_MOST);
+        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        textView.measure(widthMeasureSpec, heightMeasureSpec);
+        return textView.getMeasuredHeight();
+    }
+
+
 
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        if (CalledFrom.getClass() == RecipesFragment.class) {
+        if (CalledFrom.getClass() == RecipesFragment.class ) {
             return mSortedCoctails.size();
         }
-        else if (CalledFrom.getClass() == MakeOwnFragment.class) {
+        else{
             return mDataset.size();
-        }
-        else
-        {
-            return 0;
         }
 
     }

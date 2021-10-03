@@ -1,5 +1,6 @@
 package com.dKrzmanc.coctailmixer;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,12 +12,17 @@ import com.dKrzmanc.coctailmixer.ui.alctypes.AlcoholListItem;
 import com.dKrzmanc.coctailmixer.ui.recipes.CocktailListItem;
 import com.dKrzmanc.coctailmixer.ui.recipes.RecipesFragment;
 import com.dKrzmanc.coctailmixer.ui.settings.SettingsFragment;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 import com.opencsv.CSVReader;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean bShowEasterEgg = false;
     CocktailListItem EasterEggCocktail;
 
+    public ArrayList<CocktailListItem> FavouriteCocktails;
+    private TypeToken<CocktailListItem> CocktailListType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         EasterEggCocktail = new CocktailListItem("Mulled wine", "1:Wine;24:Cinnamon", "It's the most wonderful time of the year", "");
+
 
         ImageView Logo = findViewById(R.id.AppLogo);
         Logo.setOnLongClickListener(new View.OnLongClickListener() {
@@ -107,6 +117,13 @@ public class MainActivity extends AppCompatActivity {
 
         GenerateAlcoholList();
         InitCocktailRecycleList();
+
+
+        FavouriteCocktails = LoadFavourites();
+        if (FavouriteCocktails == null)
+        {
+            FavouriteCocktails = new ArrayList<>();
+        }
     }
 
     private void GenerateAlcoholList() {
@@ -122,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 String Name = a[0];
                 String Desc = a[1];
 
-                AlcoholListItem NewItem = new AlcoholListItem(Name, Desc, Desc.length() / 55);
+                AlcoholListItem NewItem = new AlcoholListItem(Name, Desc);
 
                 AlcoholListStrings.add(Name.toLowerCase());
                 AlcoholList.add(NewItem);
@@ -177,6 +194,70 @@ public class MainActivity extends AppCompatActivity {
             });
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    public boolean addCocktailToFav(CocktailListItem ThisItem)
+    {
+        FavouriteCocktails.add(ThisItem);
+        return saveFavs();
+    }
+    public boolean removeCocktailFromFav(CocktailListItem ThisItem)
+    {
+        for (int i = 0; i < FavouriteCocktails.size(); i++)
+        {
+            if(FavouriteCocktails.get(i).equals(ThisItem))
+            {
+                FavouriteCocktails.remove(i);
+                return saveFavs();
+            }
+        }
+        return false;
+    }
+    //Saves favourites list to memory
+    public boolean saveFavs()
+    {
+        SharedPreferences mSharedPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharedPref.edit();
+        Gson gson = new Gson();
+
+
+        try {
+            String json = gson.toJson(FavouriteCocktails);
+            editor.putString("CocktailMixerFavs", json);
+            editor.apply();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast toast = Toast.makeText(getBaseContext(), "Saving favs failed!", Toast.LENGTH_SHORT);
+            toast.show();
+            return false;
+        }
+
+    }
+
+    public ArrayList<CocktailListItem> LoadFavourites()
+    {
+        SharedPreferences mSharedPref = getPreferences(MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type typeOfCocktailListArray = new TypeToken<ArrayList<CocktailListItem>>(){}.getType();
+
+        try {
+            String json = mSharedPref.getString("CocktailMixerFavs", "");
+            if (json.equals("")) {
+                return new ArrayList<CocktailListItem>();
+            }
+            ArrayList<CocktailListItem> LoadedFavs = gson.fromJson(json, typeOfCocktailListArray);
+            for (CocktailListItem f : LoadedFavs)
+            {
+                int indexOfThis = CocktailList.indexOf(f);
+                CocktailList.get(indexOfThis).bIsFavourited = true;
+            }
+            return LoadedFavs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast toast = Toast.makeText(getBaseContext(), "Loading favs failed!", Toast.LENGTH_SHORT);
+            toast.show();
+            return new ArrayList<CocktailListItem>();
         }
     }
 

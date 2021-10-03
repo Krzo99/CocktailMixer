@@ -20,13 +20,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AlcTypesFragment extends Fragment {
 
-    private AlcTypesViewModel alcTypesViewModel;
     public RecyclerView.Adapter mAdapter;
     private SearchView searchViewAlcohol;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        alcTypesViewModel = ViewModelProviders.of(this).get(AlcTypesViewModel.class);
         View root = inflater.inflate(R.layout.fragment_alc_types, container, false);
 
         //Alcohol list

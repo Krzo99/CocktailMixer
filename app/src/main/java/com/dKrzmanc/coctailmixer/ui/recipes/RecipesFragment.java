@@ -20,15 +20,12 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class RecipesFragment extends Fragment {
 
-    private RecipesViewModel recipesViewModel;
     public RecyclerView.Adapter mAdapter;
 
     private SearchView searchViewCocktails;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        recipesViewModel =
-                ViewModelProviders.of(this).get(RecipesViewModel.class);
         View root = inflater.inflate(R.layout.fragment_recipes, container, false);
 
         //Cocktail list

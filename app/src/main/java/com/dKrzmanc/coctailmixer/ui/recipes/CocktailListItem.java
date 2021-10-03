@@ -15,15 +15,20 @@ public class CocktailListItem {
     public ArrayList<Ingredients> Ings;
     private ArrayList<Character> Vowels = new ArrayList<Character>(Arrays.asList('A','E','I','O','U'));
     public String MissingIng;
+    //Both the original note and user-changed one. If notes werent changed, Notes == NotesOG. Always display Notes!
+    public String NotesOG;
     public String Notes;
+    public boolean bIsFavourited;
     public int CurrentHeightOfItem = 0;
+
 
     public CocktailListItem(String TitleC, String IngsStr, String NotesC, String MissingIngC) //Format IngsStr -> Kok:Kaj;Kok:Kaj
     {
         Title = TitleC;
         Ings = new ArrayList<Ingredients>();
         MissingIng = MissingIngC;
-        Notes = NotesC;
+        NotesOG = NotesC;
+        Notes = NotesOG;
         String[] IngsSplit = IngsStr.split(";");
         for (String Ing : IngsSplit) {
             String[] EndSplit = Ing.split(":");
@@ -34,6 +39,19 @@ public class CocktailListItem {
                 Ings.add(new Ingredients(Name, Amount));
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            if (this.Title.equals(((CocktailListItem)obj).Title) && obj.getClass() == getClass()) {
+                return true;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     // If Ingredients contain this word/phrase

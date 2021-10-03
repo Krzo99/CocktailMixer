@@ -35,7 +35,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class MakeOwnFragment extends Fragment {
 
-    private MakeOwnViewModel makeOwnViewModel;
     AutoCompleteTextView AutoComplete;
     MainActivity Activity;
     ArrayList IngList;
@@ -50,8 +49,6 @@ public class MakeOwnFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        makeOwnViewModel =
-                ViewModelProviders.of(this).get(MakeOwnViewModel.class);
         View root = inflater.inflate(R.layout.fragment_mixown, container, false);
 
         AutoComplete = root.findViewById(R.id.AutoCompleteIngredients);
