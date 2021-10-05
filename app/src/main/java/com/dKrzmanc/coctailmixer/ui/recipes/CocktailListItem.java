@@ -13,7 +13,6 @@ public class CocktailListItem {
 
     public String Title;
     public ArrayList<Ingredients> Ings;
-    private ArrayList<Character> Vowels = new ArrayList<Character>(Arrays.asList('A','E','I','O','U'));
     public String MissingIng;
     //Both the original note and user-changed one. If notes werent changed, Notes == NotesOG. Always display Notes!
     public String NotesOG;
@@ -70,7 +69,7 @@ public class CocktailListItem {
 
     String GenerateDescription(boolean bCalledFromHome)
     {
-            String end = String.format("To craft %s <b><b>%s</b></b>, mix:<br />", Vowels.contains(Title.charAt(0)) ? "an" : "a" ,Title);
+            String end = String.format("To craft %s <b><b>%s</b></b>, mix:<br />", MainActivity.Vowels.contains(Title.charAt(0)) ? "an" : "a" ,Title);
         for (Ingredients i : Ings) {
             boolean bIsAlcohol = (MainActivity.AlcoholListStrings.contains(i.Name.toLowerCase()));
             String Name = String.format(bIsAlcohol ? "<span style='color:#ffc4c4'>%s</span>" : "%s", i.Name);

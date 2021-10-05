@@ -95,7 +95,6 @@ public class AlcoholListAdapter extends RecyclerView.Adapter<AlcoholListAdapter.
                 if (CurrentHeight == 0) {
                     int measuredHeight = getHeight(AlcoholDescText.getContext(), AlcoholDescText.getText(),(int)AlcoholDescText.getTextSize(), AlcoholDescText.getLayout().getWidth(), AlcoholDescText.getTypeface(), (int)dpToPix(32));
                     ThisItem.CurrentHeightOfItem = measuredHeight;
-                    //  TODO: Expanded alcohol list works on al devices, and isn't just hard coded!!! Still, could be better!
                     ThisItem.CurrentHeightOfItem = measuredHeight;
                     final ResizeAnimation BiggerheigthAnimation = new ResizeAnimation(
                             AlcoholLinLay,

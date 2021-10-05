@@ -24,8 +24,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -48,13 +51,14 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<CocktailListItem> CocktailList;
     public ArrayList<AlcoholListItem> AlcoholList;
     public static ArrayList<String> AlcoholListStrings;
+    public static ArrayList<Character> Vowels = new ArrayList<Character>(Arrays.asList('A','E','I','O','U'));
 
     public ArrayList<String> AllIngredients;
     public boolean bShowEasterEgg = false;
     CocktailListItem EasterEggCocktail;
 
     public ArrayList<CocktailListItem> FavouriteCocktails;
-    private TypeToken<CocktailListItem> CocktailListType;
+    public ArrayList<CocktailListItem> NotesChangedCocktails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +69,21 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing eacof Idsh menu ID as a set  because each
+
+        // Passing each of Ids menu ID as a set  because each
         // menu should be considered as top level destinations.
+        Set<Integer> topLevelDestinations = new HashSet<>();
+        topLevelDestinations.add(R.id.nav_recepie);
+        topLevelDestinations.add(R.id.nav_favs);
+        topLevelDestinations.add(R.id.nav_alc_types);
+        topLevelDestinations.add(R.id.nav_appinfo);
+        topLevelDestinations.add(R.id.nav_mix);
+
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_recepie)
+                topLevelDestinations)
                 .setDrawerLayout(drawer)
                 .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -118,10 +131,13 @@ public class MainActivity extends AppCompatActivity {
         GenerateAlcoholList();
         InitCocktailRecycleList();
 
+        NotesChangedCocktails = LoadNotesChanged();
+        if (NotesChangedCocktails == null) {
+            NotesChangedCocktails = new ArrayList<>();
+        }
 
         FavouriteCocktails = LoadFavourites();
-        if (FavouriteCocktails == null)
-        {
+        if (FavouriteCocktails == null) {
             FavouriteCocktails = new ArrayList<>();
         }
     }
@@ -235,6 +251,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Saves notes list to memory
+    public boolean saveNotes()
+    {
+        SharedPreferences mSharedPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharedPref.edit();
+        Gson gson = new Gson();
+
+
+        try {
+            String json = gson.toJson(NotesChangedCocktails);
+            editor.putString("CocktailMixerNotes", json);
+            editor.apply();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast toast = Toast.makeText(getBaseContext(), "Saving notes failed!", Toast.LENGTH_SHORT);
+            toast.show();
+            return false;
+        }
+
+    }
+
     public ArrayList<CocktailListItem> LoadFavourites()
     {
         SharedPreferences mSharedPref = getPreferences(MODE_PRIVATE);
@@ -261,6 +299,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public ArrayList<CocktailListItem> LoadNotesChanged()
+    {
+        SharedPreferences mSharedPref = getPreferences(MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type typeOfCocktailListArray = new TypeToken<ArrayList<CocktailListItem>>(){}.getType();
+
+        try {
+            String json = mSharedPref.getString("CocktailMixerNotes", "");
+            if (json.equals("")) {
+                return new ArrayList<CocktailListItem>();
+            }
+            ArrayList<CocktailListItem> LoadedChangedNotes = gson.fromJson(json, typeOfCocktailListArray);
+            for (CocktailListItem f : LoadedChangedNotes)
+            {
+                int indexOfThis = CocktailList.indexOf(f);
+                CocktailList.get(indexOfThis).Notes = f.Notes;
+            }
+            return LoadedChangedNotes;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast toast = Toast.makeText(getBaseContext(), "Loading Notes failed!", Toast.LENGTH_SHORT);
+            toast.show();
+            return new ArrayList<CocktailListItem>();
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -273,8 +337,8 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_settings)
         {
             FragmentManager fm = getSupportFragmentManager();
-            SettingsFragment editNameDialogFragment = SettingsFragment.newInstance("Some Title");
-            editNameDialogFragment.show(fm, "fragment_edit_name");
+            SettingsFragment SettingsDialogFragment = SettingsFragment.newInstance("SettingsInstance ofc");
+            SettingsDialogFragment.show(fm, "Settings_Dialog_Fragment");
         }
         return false;
     }

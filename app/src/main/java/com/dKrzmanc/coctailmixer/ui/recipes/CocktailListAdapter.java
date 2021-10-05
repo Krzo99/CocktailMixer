@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -18,28 +19,39 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dKrzmanc.coctailmixer.MainActivity;
 import com.dKrzmanc.coctailmixer.R;
 import com.dKrzmanc.coctailmixer.ResizeAnimation;
+import com.dKrzmanc.coctailmixer.callbacks.NotesEditedCallback;
 import com.dKrzmanc.coctailmixer.ui.favs.FavsFragment;
 import com.dKrzmanc.coctailmixer.ui.make_own.MakeOwnFragment;
+import com.dKrzmanc.coctailmixer.ui.notes.NotesFragment;
+import com.dKrzmanc.coctailmixer.ui.settings.SettingsFragment;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapter.ListViewHolder> {
+public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapter.ListViewHolder> implements NotesEditedCallback {
     //Dataset never changes, contains all cocktails available!
     private ArrayList<CocktailListItem> mDataset;
     private Fragment CalledFrom;
     TextView CocktailIng;
     LinearLayout CocktailDescriptionLinLayout;
     private ArrayList<CocktailListItem> mSortedCoctails;
+    CocktailListAdapter mContext = null;
+
+    // TODO So we can get The correct View for when we are updating height of entry: If notes change too much, we need to update it! Not in use
+    //private View thisViewContext;
+
 
     //Only here so we dont have to make it "final" in onBindViewHolder
     private CocktailListItem CurrentlyEditedItem;
@@ -56,6 +68,7 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
 
 
     public CocktailListAdapter(ArrayList<CocktailListItem> CocktailItems, Fragment WhereWasItCalledFrom) {
+        mContext = this;
         mDataset = CocktailItems;
         mSortedCoctails = (ArrayList)mDataset.clone();;
         CalledFrom = WhereWasItCalledFrom;
@@ -86,6 +99,44 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
 
 
         return new CocktailListAdapter.ListViewHolder(v);
+    }
+
+    @Override
+    public void onNotesEdited(String title, String Notes){
+
+        //For some reason it doesn't work with just one dataset. I must have fucked someting up, but it works, so it's fine for now!
+        ArrayList<CocktailListItem> ListOfCocktailsForThisPage;
+        if (CalledFrom.getClass() == RecipesFragment.class) {
+            ListOfCocktailsForThisPage = mSortedCoctails;
+        }
+        else {
+            ListOfCocktailsForThisPage = mDataset;
+        }
+
+        MainActivity main = ((MainActivity) CalledFrom.getActivity());
+
+        //We find the cocktail we just edited.
+        for (CocktailListItem i: ListOfCocktailsForThisPage)
+        {
+            if (i.Title.toLowerCase().equals(title.toLowerCase()))
+            {
+                // And save changed notes
+                i.Notes = Notes;
+                mContext.notifyDataSetChanged();
+
+                //Only add new, if it doesn't already exists!
+                if (main.NotesChangedCocktails.contains(i)) {
+                    int index = main.NotesChangedCocktails.indexOf(i);
+                    main.NotesChangedCocktails.get(index).Notes = Notes;
+                }
+                else {
+                    main.NotesChangedCocktails.add(i);
+                }
+                //updateItemsHeight(CurrentlyEditedItem);
+                main.saveNotes();
+                return;
+            }
+        }
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -119,7 +170,6 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
             public void onClick(View v) {
                 CocktailDescriptionLinLayout = root.findViewById(R.id.LinCocktailDesc);
                 CocktailIng = root.findViewById(R.id.CocktailDesc);
-
                 int CurrentHeight = CocktailDescriptionLinLayout.getLayoutParams().height;
                 String Notes = ThisItem.Notes;
 
@@ -193,6 +243,51 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
             }
         });
 
+        // Click on notes icon!
+        final ImageView notesBtn = root.findViewById(R.id.CocktailNoteIconButton);
+        notesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity mainActivity = ((MainActivity) CalledFrom.getActivity());
+                FragmentManager fm = mainActivity.getSupportFragmentManager();
+                NotesFragment NotesDialogFragment = NotesFragment.newInstance(ThisItem);
+                NotesDialogFragment.EditedNotesCallback = (NotesEditedCallback) mContext;
+                //thisViewContext = root;
+                NotesDialogFragment.show(fm, "Notes_Dialog_Show");
+            }
+        });
+
+        // Reset Note to default
+        notesBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                ThisItem.Notes = ThisItem.NotesOG;
+
+                MainActivity main = ((MainActivity) CalledFrom.getActivity());
+                int index = main.NotesChangedCocktails.indexOf(ThisItem);
+                if (index == -1){
+                    Toast toast = Toast.makeText(view.getContext(), "Nothing to reset!", Toast.LENGTH_SHORT);
+                    toast.show();
+                    return true;
+                }
+
+                main.NotesChangedCocktails.remove(index);
+                if (main.saveNotes()) {
+                    Toast toast = Toast.makeText(view.getContext(), String.format("Note for %s has been reset to default!", ThisItem.Title), Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                else
+                {
+                    Toast toast = Toast.makeText(view.getContext(), "Error saving notes!", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+
+                notifyDataSetChanged();
+                return true;
+            }
+        });
+
         //  Get image
         String ImgPath = ThisItem.Title.replace(" ", "_").toLowerCase();
 
@@ -220,17 +315,29 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
         CocktailDescText.setText(HtmlCompat.fromHtml(Desc, HtmlCompat.FROM_HTML_MODE_LEGACY));
 
     }
-    private void updateFavBtn(ImageView Imgbtn, boolean bIsSaved)
+
+
+    //Only for already opened items!
+    /*public void updateItemsHeight(CocktailListItem item)
     {
-        if (bIsSaved)
-        {
-            Imgbtn.setImageResource(R.drawable.ic_navbar_fav);
-        }
-        else
-        {
-            Imgbtn.setImageResource(R.drawable.ic_fav_border);
-        }
-    }
+        CocktailDescriptionLinLayout = thisViewContext.findViewById(R.id.LinCocktailDesc);
+        CocktailIng = thisViewContext.findViewById(R.id.CocktailDesc);
+        int startH = item.CurrentHeightOfItem;
+        CocktailIng.measure(0,0);             //Measure Height of ings
+        int measureNotes = getHeight(CocktailIng.getContext(), item.Notes,(int)CocktailIng.getTextSize() - 3, CocktailIng.getWidth(), CocktailIng.getTypeface(), 10);    //Measure height of Notes, for some reason cant use the same function!
+        int measureIngs = CocktailIng.getMeasuredHeight();                      //Save Height of ings
+        item.CurrentHeightOfItem = measureIngs + measureNotes;
+
+        final ResizeAnimation BiggerheigthAnimation = new ResizeAnimation(
+                CocktailDescriptionLinLayout,
+                item.CurrentHeightOfItem,
+                startH
+        );
+
+        BiggerheigthAnimation.setDuration(100);
+        CocktailDescriptionLinLayout.startAnimation(BiggerheigthAnimation);
+
+    }*/
 
     public static int getHeight(Context context, CharSequence text, int textSize, int textWidth, Typeface typeface, int padding) {
         Log.e("textSize: ", textSize+"");
@@ -246,6 +353,18 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
         int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         textView.measure(widthMeasureSpec, heightMeasureSpec);
         return textView.getMeasuredHeight();
+    }
+
+    private void updateFavBtn(ImageView Imgbtn, boolean bIsSaved)
+    {
+        if (bIsSaved)
+        {
+            Imgbtn.setImageResource(R.drawable.ic_navbar_fav);
+        }
+        else
+        {
+            Imgbtn.setImageResource(R.drawable.ic_fav_border);
+        }
     }
 
 
@@ -264,3 +383,5 @@ public class CocktailListAdapter extends RecyclerView.Adapter<CocktailListAdapte
     }
 
 }
+
+
