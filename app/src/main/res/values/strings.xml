@@ -12,4 +12,8 @@
     <string name="menu_fav">Favorites</string>
     <string name="menu_alc_types">Alcohol List</string>
     <string name="menu_app_credits">App Credits</string>
+    <string name="LukaToplak"><font color='#3DDC84'>Luka Toplak:</font> For providing an extensive list of app fixes &amp; new cocktails, that were missing in the app!</string>
+    <string name="Icon">Icon: <font color='#3DDC84'>Flaticon.com</font>. The app icon has been designed using resources from Flaticon.com</string>
+    <string name="DK">This app has been made by <font color='#3DDC84'>Domen Kržmanc</font>. \n And is available on github.com/Krzo99</string>
+    <string name="theuser"><font color='#3DDC84'>You</font>, the user, for trusting in this app </string>
 </resources>
